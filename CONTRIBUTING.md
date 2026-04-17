@@ -4,53 +4,97 @@ Thanks for your interest in contributing to a medmcp ecosystem package.
 
 This file lives in [medmcp-template](https://github.com/medmcp/medmcp-template) and is copied into every downstream repo. If you're reading it inside `medmcp-dicom`, `medmcp-neuro`, etc., the same workflow applies — only the repo name differs.
 
-## Before you start
+## Creating a new package from this template
 
-1. **Open an issue first** for non-trivial changes. It's cheap and avoids duplicated work or a direction that won't be merged.
-2. **Check the scope.** Each medmcp package has a narrow scope (e.g. `medmcp-dicom` is *only* DICOM I/O, not neuro registration). If your idea spans multiple packages, say so in the issue so we can figure out where it belongs.
+### 1) Create a new repo from this template
 
-## Local setup
+Click **Use this template** on the [medmcp-template](https://github.com/medmcp/medmcp-template) page to create your new repository (e.g. `medmcp-dicom`).
 
-[uv](https://docs.astral.sh/uv/) is required; [just](https://just.systems/) is recommended but optional.
+### 2) Run the rename helper
 
 ```bash
-# 1. Fork and clone your fork
+./scripts/rename.sh medmcp-dicom   # replaces medmcp-template / medmcp_template everywhere
+rm scripts/rename.sh
+```
+
+### 3) Finish the setup
+
+- Update `pyproject.toml`: description, keywords, and project URLs.
+- Replace `README.md` with content specific to your package.
+- Verify that `server_config()` in `server.py` returns the correct `name` and `command` — the local agent uses this for autodiscovery via the `[medmcp.stacks]` entry point.
+
+---
+
+## Get started!
+
+Ready to contribute? Here's how to set up your local development environment.
+
+### 1) Create an issue on the GitHub repository
+
+It's good practice to first discuss the proposed changes as the feature might already be implemented. Check the scope too — each medmcp package has a narrow focus (e.g. `medmcp-dicom` is *only* DICOM I/O, not neuro registration). If your idea spans multiple packages, say so in the issue so we can figure out where it belongs.
+
+### 2) Fork the repository on GitHub
+
+Click **Fork** on the repository page to create your fork.
+
+### 3) Clone your fork locally
+
+```bash
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
+```
 
-# 2. One-shot setup: installs uv if missing, syncs deps, installs pre-commit hooks
+### 4) Install your local copy into a virtual environment
+
+[uv](https://docs.astral.sh/uv/) is required for development. You can install it with:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+We provide simple [just](https://just.systems/) commands to set up the rest of the development environment. Just can be installed with:
+
+```bash
+uv tool install rust-just
+```
+
+You can now install all dependencies with:
+
+```bash
 just setup
 ```
 
-If you don't have `just`, the fallback is:
+This command (1) checks if [uv](https://docs.astral.sh/uv/) is available and if necessary installs it; (2) runs `uv sync`; (3) installs pre-commit hooks.
+
+Without `just`, the fallback is:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh   # if uv not installed
 uv sync
 uv run pre-commit install
 ```
 
-## Running checks locally
+### 5) Running checks locally
 
-Before pushing, run the same checks CI runs:
+Before pushing, make sure all checks pass — these are the same checks that run in CI:
 
 ```bash
-just check          # lint + format-check + typecheck + test
+uv run ruff check          # lint
+uv run ruff format --check # formatting
+uv run pyright             # type-checking (strict mode)
+uv run pytest              # tests
 ```
 
-Or individually:
+Or run the full suite at once:
 
 ```bash
-just lint           # ruff check
-just format-check   # ruff format --check
-just typecheck      # pyright (strict mode)
-just test           # pytest
+just check
 ```
 
 To auto-fix lint and formatting issues:
 
 ```bash
-just fix
+uv run ruff check --fix
+uv run ruff format
 ```
 
 ## Code style
@@ -60,19 +104,43 @@ just fix
 - **Docstrings**: [Google style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings). Public functions, classes, and modules are documented; trivial helpers can be skipped.
 - **Pre-commit hooks** enforce formatting, trailing-whitespace, and YAML/TOML validity on every commit.
 
-## Submitting a PR
+## Adding a tool
 
-1. Branch from `main` with a descriptive name: `feat/dicom-inspect`, `fix/anonymize-private-tags`.
+Each medmcp package exposes its functionality as MCP tools — plain typed Python functions that an LLM agent invokes by name. When adding one:
+
+1. Add a typed function with a Google-style docstring to `src/<pkg>/tools/<group>.py`. One file per logical group of related tools.
+2. Register it in `server.py`: `mcp.add_tool(your_function)`.
+3. Add unit tests in `tests/test_tools.py` — call the function directly, no server needed.
+4. Add a row to the tool inventory table in `README.md`.
+5. Add a matching entry to `skills/<pkg>/references/TOOLS.md`.
+6. If the tool changes the recommended workflow, update `skills/<pkg>/SKILL.md`.
+
+**Write precise docstrings.** FastMCP derives the tool's `name`, `description`, and `inputSchema` directly from the function signature and docstring — the LLM reads them verbatim when deciding which tool to call and how.
+
+**The `skills/` directory** contains an AgentSkill: free-form markdown that teaches the LLM *how to use* the tools — recommended workflow order, gotchas, output format. It is not auto-generated. Update `SKILL.md` whenever tool behaviour or the recommended workflow changes.
+
+## Submitting changes
+
+1. Create a feature branch from `main`:
+
+   ```bash
+   git checkout -b my-feature
+   ```
+
 2. Make small, focused commits with clear messages.
-3. Push your branch and open a PR against `main`. Fill out the PR template.
+3. Push your branch and open a pull request against `main`.
 4. CI runs on every PR — make sure all checks are green before requesting review.
 5. Be responsive to review feedback; small PRs get merged fastest.
 
 ## Reporting issues
 
-Use the issue templates: **Bug report** for defects, **Feature request** for proposals.
+Open a GitHub issue with:
 
-**Important for medical software:** *Never* attach real patient data (PHI) to issues, logs, or PRs. Use anonymized or synthetic DICOMs only. If a bug only reproduces on real data that you can't share, describe the file characteristics (modality, vendor, transfer syntax, dimensions) instead.
+- A clear description of the problem or feature request
+- Steps to reproduce (for bugs)
+- Python version and OS
+
+**Important for medical software:** *Never* attach real patient data (PHI) to issues, logs, or PRs. Use anonymized or synthetic data only. If a bug only reproduces on real data you can't share, describe the file characteristics (modality, vendor, transfer syntax, dimensions) instead.
 
 ## Security
 

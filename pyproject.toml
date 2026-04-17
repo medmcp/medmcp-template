@@ -27,11 +27,28 @@ classifiers = [
 ]
 keywords = ["medical", "image processing", "ai-agent", "mcp"]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "mcp>=1.0",
+    # "medmcp-dicom>=0.1",  # uncomment once medmcp-dicom is available
+]
+
+[project.scripts]
+medmcp-template = "medmcp_template.server:main"
+
+[project.entry-points."medmcp.stacks"]
+medmcp-template = "medmcp_template.server:server_config"
+
+# How a downstream "core" package declares this package as an optional extra:
+# [project.optional-dependencies]
+# neuro = ["medmcp-neuro>=0.1"]
 
 [project.urls]
 Homepage = "https://github.com/medmcp/medmcp-template"
 Issues = "https://github.com/medmcp/medmcp-template/issues"
+
+# Pin git-sourced medmcp packages during development:
+# [tool.uv.sources]
+# medmcp-dicom = { git = "https://github.com/medmcp/medmcp-dicom", branch = "main" }
 
 [dependency-groups]
 test = [

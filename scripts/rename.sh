@@ -69,9 +69,16 @@ done
 git mv "src/$OLD_MOD" "src/$NEW_MOD" 2>/dev/null || mv "src/$OLD_MOD" "src/$NEW_MOD"
 echo "  moved:   src/$OLD_MOD -> src/$NEW_MOD"
 
+if [[ -d "skills/$OLD_DIST" ]]; then
+    git mv "skills/$OLD_DIST" "skills/$NEW_DIST" 2>/dev/null || mv "skills/$OLD_DIST" "skills/$NEW_DIST"
+    echo "  moved:   skills/$OLD_DIST -> skills/$NEW_DIST"
+fi
+
 echo
 echo "Done. Next steps:"
 echo "  1. rm scripts/rename.sh"
 echo "  2. Edit pyproject.toml (description, keywords, URLs)"
 echo "  3. Replace README.md with your project's own README"
-echo "  4. just setup && just check"
+echo "  4. Update skills/$NEW_DIST/SKILL.md (description, workflow, gotchas)"
+echo "  5. Update skills/$NEW_DIST/references/TOOLS.md with your real tool inventory"
+echo "  6. just setup && just check"

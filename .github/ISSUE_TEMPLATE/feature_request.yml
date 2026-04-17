@@ -23,17 +23,3 @@ body:
     attributes:
       label: Alternatives considered
       description: Other approaches you thought about and why you discarded them.
-
-  - type: dropdown
-    id: scope
-    attributes:
-      label: Which package(s) does this affect?
-      multiple: true
-      options:
-        - This repo only
-        - medmcp-dicom
-        - medmcp-neuro
-        - Other foundation / stack
-        - Not sure
-    validations:
-      required: true
