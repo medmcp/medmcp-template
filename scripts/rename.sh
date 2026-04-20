@@ -41,18 +41,13 @@ fi
 
 echo "Renaming: $OLD_DIST -> $NEW_DIST  (module: $OLD_MOD -> $NEW_MOD)"
 
-# Find all tracked text files and substitute in place. Exclude this script and the
-# LICENSE/CHANGELOG so their historical text isn't rewritten.
+# Find all git-tracked text files and substitute in place. Exclude this script,
+# LICENSE/CHANGELOG (historical text), and CONTRIBUTING.md (contains meta-references
+# to medmcp-template as the origin template repo that must not be renamed).
 mapfile -t files < <(
-    find . \
-        -type f \
-        \( -name "*.py" -o -name "*.toml" -o -name "*.yml" -o -name "*.yaml" \
-           -o -name "*.md" -o -name "justfile" -o -name "*.cfg" -o -name "*.ini" \) \
-        -not -path "./.git/*" \
-        -not -path "./.venv/*" \
-        -not -path "./scripts/rename.sh" \
-        -not -name "LICENSE" \
-        -not -name "CHANGELOG.md"
+    git ls-files \
+        "*.py" "*.toml" "*.yml" "*.yaml" "*.md" "justfile" "*.cfg" "*.ini" \
+        | grep -v -E "^scripts/rename\.sh$|^CHANGELOG\.md$|^CONTRIBUTING\.md$"
 )
 
 for f in "${files[@]}"; do
