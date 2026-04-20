@@ -6,7 +6,8 @@ JSON-schema inputSchema from the function signature and docstring, so:
 
   - Use precise, unambiguous docstrings — the LLM reads these to plan calls.
   - Type-annotate every parameter and the return type.
-  - Return a plain dict; values must be JSON-serialisable.
+  - Return a plain dict for small results; return a formatted string for large
+    structured results (e.g. directory inventories) so the model can read them.
   - Confine all filesystem writes to the ``output_dir`` argument.
 """
 

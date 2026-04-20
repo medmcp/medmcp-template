@@ -30,8 +30,9 @@ with workflow guidance for your domain tools after renaming the package.
   directory passed as `output_dir`. Never write outside it.
 - **No PHI in responses**: Do not log, display, or forward patient identifiers.
   Describe files by characteristics (modality, dimensions, transfer syntax) only.
-- **Structured outputs**: Tools return plain dicts — parse keys explicitly, do not
-  assume field order or presence of optional keys.
+- **Structured outputs**: Tools return plain dicts for small results or a formatted
+  string for large structured results (e.g. directory inventories). For dict results,
+  parse keys explicitly — do not assume field order or presence of optional keys.
 - **Not for clinical use**: medmcp tools are research software. If the user describes
   a clinical decision context, flag this clearly before proceeding.
 
