@@ -2,7 +2,8 @@
 
 Scaffolding template for packages in the [medmcp](https://github.com/medmcp) ecosystem — foundations (e.g. `medmcp-dicom`), stacks (e.g. `medmcp-neuro`), and supporting tools.
 
-Each package built from this template is a **distributable Python package** that exposes an **MCP (Model Context Protocol) server** over stdio. An LLM (e.g. a local Gemma4 instance) invokes the registered tools by name to perform medical image processing tasks.
+Each package built from this template is a **distributable Python package** that exposes an **MCP (Model Context Protocol) server** over stdio.
+An LLM (e.g. a local Gemma4 instance) invokes the registered tools by name to perform medical image processing tasks.
 
 Click **Use this template** on GitHub to scaffold a new package.
 
@@ -47,9 +48,8 @@ N/A — placeholder package.
 |---|---|---|
 | Build / deps | `pyproject.toml`, `.python-version` | uv-managed, Python ≥3.12, `mcp>=1.0` |
 | MCP server | `src/medmcp_template/server.py` | FastMCP over stdio; `server_config()` enables autodiscovery; add tools here |
-| Tool scaffold | `src/medmcp_template/tools/example.py` | One file per tool group |
-| AgentSkill | `skills/medmcp-template/SKILL.md` | Workflow guidance the LLM reads at activation |
-| Tool reference | `skills/medmcp-template/references/TOOLS.md` | Loaded on demand; keep in sync with server.py |
+| Tool scaffold | `src/medmcp_template/tools/example.py` | One file per tool group; include `_render` key for format-critical tools |
+| AgentSkill | `src/medmcp_template/skills/<task-name>/SKILL.md` | Workflow steps + gotchas; `name` field must match directory name |
 | Dev workflow | `justfile`, `.pre-commit-config.yaml` | `just setup`, `just check`, `just fix` |
 | CI | `.github/workflows/ci.yml` | Lint, format-check, pyright (strict), pytest on py3.12 / 3.13 |
 | Contributor docs | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` | |
@@ -80,12 +80,16 @@ Confirm that `server_config()` in `server.py` returns the correct `name` and `co
 
 - Add tool functions to `src/<your_package>/tools/`.
 - Register them in `src/<your_package>/server.py` with `mcp.add_tool(your_tool)`.
-- FastMCP derives the MCP `name`, `description`, and `inputSchema` from the function signature and docstring — write precise docstrings, the LLM reads them.
+- FastMCP derives the MCP `name`, `description`, and `inputSchema` from the function signature and docstring — keep docstrings focused on what the tool does and what it returns.
+- For tools with specific output format requirements, include a `_render` key (str) in the return dict with display rules and a required next action (see `process_image` in `example.py`).
 
 ### 5. Update the AgentSkill
 
-- Edit `skills/<your_package>/SKILL.md` — replace the placeholder description and workflow with domain-specific guidance (what the LLM should do, in what order, and what gotchas to watch for).
-- Keep `skills/<your_package>/references/TOOLS.md` in sync with your registered tools.
+- Rename `src/<your_package>/skills/<your_package>/` to a task name (e.g. `explore-data`,
+  `segment-brain`). Update the `name` field in `SKILL.md` to match the new directory name.
+- Replace the placeholder workflow and gotchas with domain-specific guidance.
+- **Do not add output format rules to SKILL.md** — those belong in the tool's `_render`
+  return value. Keep the skill focused on workflow steps and gotchas only.
 
 ### 6. Install and activate
 
@@ -99,7 +103,7 @@ uv tool install medmcp-dicom            # from PyPI once published
 
 The package declares itself via the `[medmcp.stacks]` entry point (written to `entry_points.txt` at install time). The agent scans all uv tool environments for this section, calls `server_config()` to retrieve the server name and command, and resolves the absolute binary path — no manual edits to `.vibe/config.toml` needed.
 
-The AgentSkill in `skills/<your_package>/` is picked up by the agent alongside the MCP server — no separate install step needed.
+The AgentSkill in `src/<your_package>/skills/<task-name>/` is picked up by the agent alongside the MCP server — no separate install step needed.
 
 ### 7. Verify
 

@@ -2,27 +2,21 @@
 name: medmcp-template
 description: >
   Placeholder skill — replace with your domain workflow guidance after scaffolding.
-  Example for a neuro package: "Run brain extraction, segmentation, or registration
-  on MRI scans. Use when the user asks to process, analyse, or register brain images."
+  Rename this directory and the `name` field above to the task this skill covers
+  (e.g. `explore-data`, `segment-brain`, `register-volumes`).
 license: Apache-2.0
 compatibility: Requires the medmcp-template MCP server (console script medmcp-template).
 ---
 
-## Overview
-
-<!-- 2–3 sentences: what this skill does and the domain it covers. -->
-
-This is a placeholder skill for the medmcp-template package. Replace this content
-with workflow guidance for your domain tools after renaming the package.
-
 ## Workflow
 
-<!-- Step-by-step instructions for the most common task. Be prescriptive. -->
+<!-- Step-by-step instructions for the most common task. Be prescriptive.
+     Each step should map to a concrete tool call or user interaction.  -->
 
 1. Confirm the input file exists and is a supported format (NIfTI `.nii`/`.nii.gz` or DICOM).
-2. Call the appropriate tool with the required parameters (see [references/TOOLS.md](references/TOOLS.md)).
-3. Verify the output dict contains the expected keys before using results downstream.
-4. Report the result using the output format below.
+2. Call the appropriate tool with the required parameters. Follow the `_render` field
+   in the result — it contains per-call display rules and a required next action.
+3. Multiple inputs: run step 2 per input in separate sections; do not merge results.
 
 ## Gotchas
 
@@ -30,20 +24,8 @@ with workflow guidance for your domain tools after renaming the package.
   directory passed as `output_dir`. Never write outside it.
 - **No PHI in responses**: Do not log, display, or forward patient identifiers.
   Describe files by characteristics (modality, dimensions, transfer syntax) only.
-- **Structured outputs**: Tools return plain dicts for small results or a formatted
-  string for large structured results (e.g. directory inventories). For dict results,
-  parse keys explicitly — do not assume field order or presence of optional keys.
+- **Optional keys**: Tools return plain dicts. Parse keys explicitly — do not assume
+  field order or presence of optional keys.
 - **Not for clinical use**: medmcp tools are research software. If the user describes
   a clinical decision context, flag this clearly before proceeding.
-
-## Output format
-
-```
-Tool: <tool_name>
-Input: <brief description of input — no PHI>
-Result: <key values from the output dict>
-Status: success | failed
-```
-
-If a tool raises an exception, report the error type and message, then stop.
-Do not retry with modified inputs without asking the user first.
+- **Errors**: report and stop; do not retry with modified inputs without asking the user.
