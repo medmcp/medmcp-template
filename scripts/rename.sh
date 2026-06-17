@@ -41,12 +41,15 @@ fi
 
 echo "Renaming: $OLD_DIST -> $NEW_DIST  (module: $OLD_MOD -> $NEW_MOD)"
 
-# Find all git-tracked text files and substitute in place. Exclude this script,
-# LICENSE/CHANGELOG (historical text), and CONTRIBUTING.md (contains meta-references
-# to medmcp-template as the origin template repo that must not be renamed).
+# Find all git-tracked text files and substitute in place. Includes Dockerfiles
+# and JSON (the .devcontainer config) so the container setup is renamed too.
+# Exclude this script, LICENSE/CHANGELOG (historical text), and CONTRIBUTING.md
+# (contains meta-references to medmcp-template as the origin template repo that
+# must not be renamed).
 mapfile -t files < <(
     git ls-files \
         "*.py" "*.toml" "*.yml" "*.yaml" "*.md" "justfile" "*.cfg" "*.ini" \
+        "*Dockerfile" "*.json" \
         | grep -v -E "^scripts/rename\.sh$|^CHANGELOG\.md$|^CONTRIBUTING\.md$"
 )
 

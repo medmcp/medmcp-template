@@ -51,9 +51,29 @@ N/A — placeholder package.
 | Tool scaffold | `src/medmcp_template/tools/example.py` | One file per tool group; include `_render` key for format-critical tools |
 | AgentSkill | `src/medmcp_template/skills/<task-name>/SKILL.md` | Workflow steps + gotchas; `name` field must match directory name |
 | Dev workflow | `justfile`, `.pre-commit-config.yaml` | `just setup`, `just check`, `just fix` |
+| Dev container | `.devcontainer/` | Recommended dev workflow (PyCharm / VS Code) — same toolchain as deployment |
+| Container image | `Dockerfile`, `.dockerignore` | Ship the stack as a stdio MCP server image (`FROM medmcp-base`); `just docker-build` |
 | CI | `.github/workflows/ci.yml` | Lint, format-check, pyright (strict), pytest on py3.12 / 3.13 |
 | Contributor docs | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` | |
 | Issue management | `.github/ISSUE_TEMPLATE/*`, `PULL_REQUEST_TEMPLATE.md` | Medical-context-aware with PHI warnings |
+
+---
+
+## Develop & ship as a container
+
+**Recommended dev workflow — the dev container.** This template ships a
+`.devcontainer/` (PyCharm 2024.2+ or VS Code) so contributors get the same
+toolchain (Python 3.12 + uv, `just`, git, Docker CLI). It derives from the shared
+`medmcp-base` image — build it once from the core repo (`just docker-base` in
+`medmcp-dev`), then open the project and use the **Dev Container** action; `uv sync`
+runs on first start.
+
+**Ship as a container.** `just docker-build` builds the stack image (a stdio MCP
+server, `FROM medmcp-base`). The medmcp core launches it on deployment nodes via a
+`stacks.d/<your-package>.toml` manifest (`docker run -i …`; GPU stacks add
+`--device nvidia.com/gpu=all`, CDI), so no host Python install is needed there. Pin
+any GPU/CUDA build in `pyproject.toml` against the fleet driver floor
+(CUDA 12.8 / driver R570).
 
 ---
 
