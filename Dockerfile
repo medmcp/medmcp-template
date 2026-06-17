@@ -8,6 +8,11 @@
 ARG BASE_IMAGE=medmcp-base:dev
 FROM ${BASE_IMAGE} AS runtime
 
+# Stack metadata for one-click install/discovery (read via `docker inspect`, never
+# by executing the image). Keep name/skills_path in sync with the package; set
+# "gpu": true for GPU stacks (the core then launches with --device nvidia.com/gpu=all).
+LABEL org.medmcp.stack='{"name": "medmcp-template", "gpu": false, "tool_timeout_sec": 1800, "skills_path": "/app/src/medmcp_template/skills"}'
+
 WORKDIR /app
 
 # Frozen install from the committed lock (build-time network; runtime offline).
