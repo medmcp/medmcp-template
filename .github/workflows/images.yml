@@ -72,7 +72,7 @@ jobs:
       # Build and load locally so the exact image is smoke-tested before pushing.
       # Arch-suffixed tags are an internal handoff to the merge job — nothing
       # outside this workflow should consume them.
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           load: true
