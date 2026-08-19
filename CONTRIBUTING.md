@@ -4,6 +4,10 @@ Thanks for your interest in contributing to a medmcp ecosystem package.
 
 This file lives in [medmcp-template](https://github.com/medmcp/medmcp-template) and is copied into every downstream repo. If you're reading it inside `medmcp-dicom`, `medmcp-neuro`, etc., the same workflow applies — only the repo name differs.
 
+<!-- TEMPLATE-ONLY:START -->
+<!-- Everything between these markers is scaffolding instructions for
+     someone creating a stack FROM this template. `scripts/rename.sh`
+     deletes it, so a scaffolded repo never ships it. -->
 ## Creating a new package from this template
 
 ### 1) Create a new repo from this template
@@ -25,6 +29,7 @@ rm scripts/rename.sh
 
 ---
 
+<!-- TEMPLATE-ONLY:END -->
 ## Get started!
 
 Ready to contribute? Here's how to set up your local development environment.
@@ -50,7 +55,7 @@ The recommended way to work on a medmcp package is **inside the dev container**
 (`.devcontainer/`) — it gives everyone the same toolchain (Python 3.12 + uv,
 `just`, git, Docker CLI) and matches the deployment image. It derives from the
 shared `medmcp-base` image, so build that once from the core repo first
-(`just docker-base` in `medmcp-dev`). Then:
+(`just docker-base` in a `medmcp` checkout). Then:
 
 - **PyCharm** (unified PyCharm, 2024.2+; Docker integration is a Professional
   feature): open this project, open `.devcontainer/devcontainer.json`, and use the

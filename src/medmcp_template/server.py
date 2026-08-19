@@ -23,6 +23,11 @@ def server_config() -> dict[str, object]:
         "command": "medmcp-template",
         "skills_path": str(_pkg_files("medmcp_template") / "skills"),
         "tool_timeout_sec": 300.0,
+        # If this stack is slow to start — importing torch, loading weights — set
+        # a startup budget too. The agent gives a server only a few seconds to
+        # answer "what tools do you have" before giving up, and a stack that
+        # misses that window loads with *no* tools and nothing saying why.
+        # "startup_timeout_sec": 120.0,
     }
 
 

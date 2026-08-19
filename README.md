@@ -42,6 +42,74 @@ N/A — placeholder package.
 
 ---
 
+## Skill inventory
+
+| Skill | What it is for |
+|---|---|
+| `<task-name>` | REPLACE ME — one line on the task this skill guides the agent through. |
+
+Skills live in `src/<package>/skills/<task-name>/SKILL.md`: the workflow steps and
+the gotchas for a task, not a description of the tools. The `name:` field must
+match the directory name.
+
+---
+
+## Development
+
+### Develop in the dev container (recommended)
+
+This repo ships a dev container (`.devcontainer/`) with the full toolchain
+(Python 3.12 + uv, `just`, git, Docker CLI). It derives from the shared
+`medmcp-base` image, so build that once from the core repo first (`just docker-base`
+in a `medmcp` checkout). Then open the repo with the **Dev Container** action in
+PyCharm (2024.2+) or **Reopen in Container** in VS Code — `uv sync` runs on first
+start. See the core repo's [CONTRIBUTING](https://github.com/medmcp/medmcp/blob/main/CONTRIBUTING.md)
+for IDE specifics.
+
+### Local install (alternative)
+
+```bash
+just setup     # install uv, sync dev environment, register pre-commit hooks
+just check     # lint + format-check + typecheck + tests
+just fix       # auto-fix lint and format
+```
+
+For local agent use, install the stack into its own uv tool environment:
+
+```bash
+uv tool install --editable .
+```
+
+The package registers itself via the `[medmcp.stacks]` entry point. The local
+agent autodiscovers it on the next session — no manual config needed.
+
+### Container image (deployment)
+
+```bash
+just docker-build           # build the stack image (FROM medmcp-base)
+```
+
+It is a stdio MCP server. The medmcp **core** launches it on demand via a
+`stacks.d/<your-package>.toml` manifest (`docker run -i …`; GPU stacks add
+`--device nvidia.com/gpu=all`, CDI), so deployment nodes need no host Python
+install. Build both architectures — the core refuses to install a foreign-arch
+image rather than failing later with "exec format error". Pin any GPU/CUDA build
+in `pyproject.toml` against the fleet driver floor (CUDA 12.8 / driver R570).
+
+### Staying in sync with the template
+
+Files shared with [medmcp-template](https://github.com/medmcp/medmcp-template) are
+listed in `scripts/shared-files.txt`. The **Template drift** workflow reports when
+one of them diverges; `./scripts/sync-from-template.sh` pulls them back. A change
+that belongs in every stack goes in the template, not here.
+
+---
+
+<!-- TEMPLATE-ONLY:START -->
+<!-- Everything between these markers is scaffolding instructions for
+     someone creating a stack FROM this template. `scripts/rename.sh`
+     deletes it, so a scaffolded repo never ships it. -->
+
 ## What's in the box
 
 | Area | Files | Notes |
@@ -56,24 +124,6 @@ N/A — placeholder package.
 | CI | `.github/workflows/ci.yml` | Lint, format-check, pyright (strict), pytest on py3.12 / 3.13 |
 | Contributor docs | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` | |
 | Issue management | `.github/ISSUE_TEMPLATE/*`, `PULL_REQUEST_TEMPLATE.md` | Medical-context-aware with PHI warnings |
-
----
-
-## Develop & ship as a container
-
-**Recommended dev workflow — the dev container.** This template ships a
-`.devcontainer/` (PyCharm 2024.2+ or VS Code) so contributors get the same
-toolchain (Python 3.12 + uv, `just`, git, Docker CLI). It derives from the shared
-`medmcp-base` image — build it once from the core repo (`just docker-base` in
-`medmcp-dev`), then open the project and use the **Dev Container** action; `uv sync`
-runs on first start.
-
-**Ship as a container.** `just docker-build` builds the stack image (a stdio MCP
-server, `FROM medmcp-base`). The medmcp core launches it on deployment nodes via a
-`stacks.d/<your-package>.toml` manifest (`docker run -i …`; GPU stacks add
-`--device nvidia.com/gpu=all`, CDI), so no host Python install is needed there. Pin
-any GPU/CUDA build in `pyproject.toml` against the fleet driver floor
-(CUDA 12.8 / driver R570).
 
 ---
 
@@ -133,10 +183,21 @@ just setup && just check
 
 ---
 
+<!-- TEMPLATE-ONLY:END -->
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: fork, `just setup`, `just check`, open a PR against `main`.
 
+### Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://allcontributors.org) specification — contributions of any kind are welcome!
+
 ## License
 
-[Apache 2.0](LICENSE)
+[Apache 2.0](LICENSE). Third-party tools, model weights, and templates bundled by
+this stack retain their own licenses and are attributed in [`NOTICE`](NOTICE).

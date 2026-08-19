@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 #
 # medmcp-template — stack packaged as a fixed-environment MCP stdio server.
-# Derives from the shared `medmcp-base` image (built in the medmcp-dev core repo:
+# Derives from the shared `medmcp-base` image (built in the medmcp core repo:
 # `just docker-base`). CPU stacks just use it; GPU stacks request the GPU in their
 # stacks.d manifest (`--device nvidia.com/gpu=all`, CDI). Add any system packages
 # or baked model weights your tools need before `uv sync`.
