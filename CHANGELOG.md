@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A test asserting `server_config()` still satisfies the core's autodiscovery
+  contract, and a commented `startup_timeout_sec` beside it. A stack that answers
+  too slowly is dropped with no tools and no error, which is a miserable thing to
+  debug from the far side.
+
 - Shared-file sync: `scripts/shared-files.txt` lists what every stack inherits from
   this template, `scripts/sync-from-template.sh` pulls those files into a stack, and
   a **Template drift** workflow reports when one has diverged. Four such drifts had
