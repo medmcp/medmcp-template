@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The scaffolding docs match what a real stack ends up looking like. `CONTRIBUTING.md`
+  told contributors to add an entry to `skills/<pkg>/references/TOOLS.md`, a file that
+  exists in no stack and not in this template either, and it documented neither the
+  versioning policy nor the all-contributors bot — even though `.all-contributorsrc`
+  and the README markers ship here ready for it. The README's weights section is now
+  a bundled-tools table plus a citation section, matching `NOTICE`, which already asked
+  for both. `scripts/rename.sh` names `NOTICE` in its closing checklist, which it
+  never did.
+
 ### Added
 
 - A test asserting `server_config()` still satisfies the core's autodiscovery

@@ -20,16 +20,34 @@ Click **Use this template** on GitHub to scaffold a new package.
 |---|---|---|---|
 | `add_numbers` | Placeholder — adds two floats | `a: float`, `b: float` | `{"result": float}` |
 
-### Model / weights provenance
+### Bundled tools
 
-<!-- Document any pretrained weights used by your tools:
-- Model name and version
-- Source URL and checksum
-- License
-- How weights are downloaded / cached at runtime
+<!-- REPLACE THIS SECTION, and keep it in step with NOTICE.
+
+A stack that wraps third-party software, or bakes pretrained weights into its
+published image, redistributes them: each stays under its own license and most
+carry citation requirements. List what you bundle, what uses it, where it comes
+from, and under what licence — one row each — then mirror it in NOTICE.
+
+| Tool / weights | Used by | Source | License |
+|---|---|---|---|
+| example-tool | `your_tool` | [upstream](https://example.org) package dependency (baked into the image) | [Apache 2.0](https://example.org/LICENSE) |
 -->
 
-N/A — placeholder package, no pretrained weights.
+N/A — placeholder package. It bundles no third-party tools and no pretrained
+weights, so there is nothing to attribute yet.
+
+### Citation
+
+<!-- REPLACE THIS SECTION if your stack wraps published scientific methods.
+Results produced with them should cite the underlying work, not this package:
+
+- **Tool name** — Author A, et al. Title. *Journal* (Year). [doi:...](https://doi.org/...)
+-->
+
+N/A — placeholder package, no third-party methods to cite.
+
+Full third-party attribution belongs in [`NOTICE`](NOTICE).
 
 ### Hardware requirements
 
