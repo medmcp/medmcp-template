@@ -23,9 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   licence section, so `.all-contributorsrc` has somewhere to render and the
   attribution file is actually discoverable.
 
-- `CODEOWNERS` names the actual maintainers. Every stack repo shipped the same
-  fully commented-out file, carrying a "replace before the repo goes public" note
-  — so no repo had code owners and none would have requested a review.
+- `CODEOWNERS` is gone. Every stack repo shipped the same fully commented-out
+  file behind a "replace before the repo goes public" note, so it assigned no
+  ownership and requested no reviews. With two maintainers who already watch
+  these repos it earns nothing today, and under code-owner-gated branch
+  protection it would mean neither maintainer could merge without the other. It
+  is three lines to reinstate when there are outside contributors or genuinely
+  separate areas of ownership.
 - Docs and build files refer to the core repo as `medmcp`, not the pre-rename
   `medmcp-dev`.
 

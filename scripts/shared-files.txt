@@ -6,6 +6,10 @@
 # deliberate act, and a stack can still be inspected to see exactly what it
 # inherits.
 #
+# Note: the sync copies files, it does not delete them. Removing a file from this
+# list stops it being kept in step; deleting it from the stacks that already have
+# it is a separate, manual step. `.github/CODEOWNERS` was removed this way.
+#
 # Deliberately NOT here, because each repo must differ:
 #   README.md, CHANGELOG.md, pyproject.toml, uv.lock, Dockerfile, justfile
 #       — stack-specific content.
@@ -23,7 +27,6 @@
 CODE_OF_CONDUCT.md
 LICENSE
 SECURITY.md
-.github/CODEOWNERS
 .github/dependabot.yml
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/feature_request.yml
