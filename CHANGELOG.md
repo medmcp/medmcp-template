@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- README carries the all-contributors markers and points at `NOTICE` from the
+  licence section, so `.all-contributorsrc` has somewhere to render and the
+  attribution file is actually discoverable.
+
 - `CODEOWNERS` names the actual maintainers. Every stack repo shipped the same
   fully commented-out file, carrying a "replace before the repo goes public" note
   — so no repo had code owners and none would have requested a review.

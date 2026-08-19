@@ -188,6 +188,16 @@ just setup && just check
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: fork, `just setup`, `just check`, open a PR against `main`.
 
+### Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://allcontributors.org) specification — contributions of any kind are welcome!
+
 ## License
 
-[Apache 2.0](LICENSE)
+[Apache 2.0](LICENSE). Third-party tools, model weights, and templates bundled by
+this stack retain their own licenses and are attributed in [`NOTICE`](NOTICE).
