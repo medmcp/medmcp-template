@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `CODEOWNERS` names the actual maintainers. Every stack repo shipped the same
+  fully commented-out file, carrying a "replace before the repo goes public" note
+  — so no repo had code owners and none would have requested a review.
+- Docs and build files refer to the core repo as `medmcp`, not the pre-rename
+  `medmcp-dev`.
+
 - `rename.sh` now finishes the job: it strips the `TEMPLATE-ONLY` sections from
   README/CONTRIBUTING, points the image workflow at the new stack and enables
   publishing, and removes itself. `medmcp-dicom` shipped the template's "creating a

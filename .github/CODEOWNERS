@@ -1,3 +1,3 @@
-# Default owners for the whole repo.
-# TODO: replace with real GitHub handle(s) before the repo goes public.
-# *   @your-github-handle
+# Default owners for the whole repo. GitHub requests their review on every pull
+# request, so keep this to people who can actually merge here.
+*   @pfriedri @jqmcginnis
