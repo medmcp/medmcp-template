@@ -4,6 +4,10 @@ Thanks for your interest in contributing to a medmcp ecosystem package.
 
 This file lives in [medmcp-template](https://github.com/medmcp/medmcp-template) and is copied into every downstream repo. If you're reading it inside `medmcp-dicom`, `medmcp-neuro`, etc., the same workflow applies — only the repo name differs.
 
+<!-- TEMPLATE-ONLY:START -->
+<!-- Everything between these markers is scaffolding instructions for
+     someone creating a stack FROM this template. `scripts/rename.sh`
+     deletes it, so a scaffolded repo never ships it. -->
 ## Creating a new package from this template
 
 ### 1) Create a new repo from this template
@@ -25,6 +29,7 @@ rm scripts/rename.sh
 
 ---
 
+<!-- TEMPLATE-ONLY:END -->
 ## Get started!
 
 Ready to contribute? Here's how to set up your local development environment.

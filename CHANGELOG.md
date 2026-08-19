@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Shared-file sync: `scripts/shared-files.txt` lists what every stack inherits from
+  this template, `scripts/sync-from-template.sh` pulls those files into a stack, and
+  a **Template drift** workflow reports when one has diverged. Four such drifts had
+  already accumulated across the stacks, unnoticed.
+- `NOTICE`, `certs/` (+ `.gitignore` rules) and `.all-contributorsrc`, so a scaffolded
+  stack starts with attribution, proxy-friendly builds and contributor credit rather
+  than acquiring them one repo at a time.
+
+### Changed
+
+- `rename.sh` now finishes the job: it strips the `TEMPLATE-ONLY` sections from
+  README/CONTRIBUTING, points the image workflow at the new stack and enables
+  publishing, and removes itself. `medmcp-dicom` shipped the template's "creating a
+  new package" instructions because these were left to the reader.
+- README follows the same shape as the published stacks (tool inventory, skill
+  inventory, development, contributing, license), so a scaffolded repo starts
+  consistent instead of being reshaped later.
+- The image workflow takes a `concurrency` group. Two merges landing close together
+  could otherwise leave `:main` built from the older commit, silently (medmcp#109).
+
 - Container scaffold: `Dockerfile` + `.dockerignore` + `.devcontainer` + `just docker-build`; `org.medmcp.stack` label; `rename.sh` also renames the Dockerfile and devcontainer.json; dev-container-first contributor docs.
 
 - Initial template scaffold: pyproject + uv, ruff + pyright strict, pytest, just, pre-commit
