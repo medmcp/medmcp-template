@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The image workflow no longer rebuilds on every push and every pull request. Path
+  filters limit it to changes that can actually alter the image — the Dockerfile, the
+  dependency files, `src/**`, and the workflow itself — and dependency-bump PRs are
+  skipped, since CI already tests the bump and the image is rebuilt on merge to `main`
+  anyway. Building a stack image costs two native runners and a multi-gigabyte
+  dependency install, so a docs- or test-only commit was buying an image nobody
+  needed. Note that `README.md` and `LICENSE` are copied into the image but never read
+  at runtime, so they deliberately do not trigger a rebuild; a published image can
+  carry a slightly older copy of them. Stacks scaffolded before this should pick the
+  change up — `medmcp-neuro-core`, `medmcp-dicom` and `medmcp-totalsegmentator` have it.
+
 - The scaffolding docs match what a real stack ends up looking like. `CONTRIBUTING.md`
   told contributors to add an entry to `skills/<pkg>/references/TOOLS.md`, a file that
   exists in no stack and not in this template either, and it documented neither the
