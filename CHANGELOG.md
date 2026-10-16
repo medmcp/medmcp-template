@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `LICENSE` is no longer a template-shared file: the licence is each stack's own
+  choice. Most stacks stay Apache-2.0; stacks that build on GPL libraries (such as
+  pingouin) are GPL-3.0, and the drift check no longer flags them.
 - The image workflow no longer rebuilds on every push and every pull request. Path
   filters limit it to changes that can actually alter the image — the Dockerfile, the
   dependency files, `src/**`, and the workflow itself — and dependency-bump PRs are
