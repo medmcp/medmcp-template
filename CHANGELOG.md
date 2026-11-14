@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Release tags: pushing `vX.Y.Z` builds the image and publishes `:X.Y.Z` and `:X.Y` (multi-arch) without moving `:main`; CONTRIBUTING has the release steps.
+
 ### Fixed
 
 - `server.py`: worker processes are spawned instead of forked, and only JSON-RPC
