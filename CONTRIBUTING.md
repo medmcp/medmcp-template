@@ -165,6 +165,15 @@ This package follows [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PAT
 
 The version lives in `pyproject.toml`. Record every notable change under the `[Unreleased]` heading in [CHANGELOG.md](CHANGELOG.md) (the format follows [Keep a Changelog](https://keepachangelog.com)). On release, `[Unreleased]` is renamed to the new version with a date and the release commit is tagged `vMAJOR.MINOR.PATCH`.
 
+Releasing, step by step (release tags are protected: an org admin pushes them):
+
+1. Open a PR that sets `version` in `pyproject.toml` and renames `[Unreleased]` in
+   CHANGELOG.md to `[X.Y.Z] - YYYY-MM-DD`; rebase-merge it.
+2. Tag that commit on `main` and push the tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+3. The image workflow builds the tag and publishes `ghcr.io/medmcp/<stack>:X.Y.Z` and
+   `:X.Y` (multi-arch) next to `:<sha>`; `:main` is left as it is. Pin the catalogue
+   entry to `:X.Y.Z` (or `:X.Y` to follow patch releases).
+
 ## Recognizing contributions
 
 This project uses the [all-contributors](https://allcontributors.org) bot to credit everyone who helps — not just code, but documentation, ideas, bug reports, reviews, and more. The list lives in the README and is tracked in `.all-contributorsrc`; both ship with this template, ready for the bot to write into.

@@ -39,6 +39,10 @@ name: Image
 on:
   push:
     branches: [main]
+    # A release tag (v0.1.0) publishes :0.1.0 and :0.1 next to the :<sha> image, and
+    # leaves :main alone. GitHub does not evaluate the paths filter for tag pushes,
+    # so a tag always builds.
+    tags: ['v*.*.*']
     paths:
       - 'Dockerfile'
       - '.dockerignore'
@@ -161,7 +165,14 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           docker push ghcr.io/medmcp/${{ env.STACK }}:${{ github.sha }}-${{ matrix.arch }}
-          docker push ghcr.io/medmcp/${{ env.STACK }}:main-${{ matrix.arch }}
+          if [ "${{ github.ref_type }}" = tag ]; then
+            v="${GITHUB_REF_NAME#v}"
+            docker tag ghcr.io/medmcp/${{ env.STACK }}:main-${{ matrix.arch }} \
+              ghcr.io/medmcp/${{ env.STACK }}:$v-${{ matrix.arch }}
+            docker push ghcr.io/medmcp/${{ env.STACK }}:$v-${{ matrix.arch }}
+          else
+            docker push ghcr.io/medmcp/${{ env.STACK }}:main-${{ matrix.arch }}
+          fi
 
   # Runs once, after BOTH arches have pushed. Merging the per-arch images into a
   # manifest list is what makes the bare tag multi-arch; without this job the
@@ -178,18 +189,27 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge arch tags into multi-arch manifest lists
         run: |
-          for tag in "${{ github.sha }}" main; do
-            docker buildx imagetools create -t "ghcr.io/medmcp/${{ env.STACK }}:$tag" \
-              "ghcr.io/medmcp/${{ env.STACK }}:$tag-amd64" \
-              "ghcr.io/medmcp/${{ env.STACK }}:$tag-arm64"
-          done
+          img="ghcr.io/medmcp/${{ env.STACK }}"
+          merge() {  # merge <target tag> <source tag>
+            docker buildx imagetools create -t "$img:$1" "$img:$2-amd64" "$img:$2-arm64"
+          }
+          merge "${{ github.sha }}" "${{ github.sha }}"
+          if [ "${{ github.ref_type }}" = tag ]; then
+            v="${GITHUB_REF_NAME#v}"            # 0.1.0
+            merge "$v" "$v"
+            merge "${v%.*}" "$v"                # 0.1: follows the newest patch release
+            echo "PUBLISHED=$v" >> "$GITHUB_ENV"
+          else
+            merge main main
+            echo "PUBLISHED=main" >> "$GITHUB_ENV"
+          fi
       - name: Verify both platforms resolve
         run: |
-          insp=$(docker buildx imagetools inspect "ghcr.io/medmcp/${{ env.STACK }}:main")
+          insp=$(docker buildx imagetools inspect "ghcr.io/medmcp/${{ env.STACK }}:$PUBLISHED")
           echo "$insp"
           for plat in linux/amd64 linux/arm64; do
             echo "$insp" | grep -q "$plat" \
-              || { echo "::error::${{ env.STACK }}:main is missing $plat"; exit 1; }
+              || { echo "::error::${{ env.STACK }}:$PUBLISHED is missing $plat"; exit 1; }
           done
           echo "both platforms present"
 
