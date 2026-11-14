@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `server.py`: worker processes are spawned instead of forked, and only JSON-RPC
+  reaches stdout. A worker forked from the server (nnU-Net preprocessing,
+  PyTorch DataLoader) inherited stdin's lock from the stdio transport's reader
+  thread and hung at start; library and worker prints corrupted the protocol
+  stream. Found in medmcp-anonymize and medmcp-monai; stacks made from the
+  template get the fix from the start.
+
 ### Changed
 
 - `LICENSE` is no longer a template-shared file: the licence is each stack's own
