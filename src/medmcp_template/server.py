@@ -4,9 +4,15 @@ Replace this module's tool registrations with your domain tools after
 scaffolding a new repo from the template. See README.md for the full workflow.
 """
 
+import multiprocessing
+import os
+import sys
 from importlib.resources import files as _pkg_files
+from typing import TextIO
 
+import anyio
 from mcp.server.fastmcp import FastMCP
+from mcp.server.stdio import stdio_server
 
 from medmcp_template.tools.example import add_numbers
 
@@ -31,6 +37,22 @@ def server_config() -> dict[str, object]:
     }
 
 
+async def _serve(protocol: TextIO) -> None:
+    async with stdio_server(stdout=anyio.wrap_file(protocol)) as (read, write):
+        server = mcp._mcp_server  # pyright: ignore[reportPrivateUsage]
+        await server.run(read, write, server.create_initialization_options())
+
+
 def main() -> None:
     """Launch the MCP server over stdio (JSON-RPC)."""
-    mcp.run(transport="stdio")
+    # Worker processes (nnU-Net's preprocessing, PyTorch DataLoader workers) are
+    # started fresh, never forked: a forked child inherits stdin's lock while the
+    # stdio transport's reader thread holds it, and hangs closing stdin at start.
+    multiprocessing.set_start_method("spawn", force=True)
+    # JSON-RPC gets its own copy of the agent's pipe; fd 1 itself goes to the log,
+    # so what libraries and worker processes print cannot reach the protocol.
+    protocol = os.fdopen(os.dup(1), "w", encoding="utf-8")
+    sys.stdout.flush()
+    os.dup2(2, 1)
+    sys.stdout = sys.stderr
+    anyio.run(_serve, protocol)
