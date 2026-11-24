@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Tools can declare their effect (read-only, writes new files, destructive) with one registration argument, `**tool_effect(...)`; MedMCP shows it on the approval card. Needs `mcp>=1.19`.
 - Release tags: pushing `vX.Y.Z` builds the image and publishes `:X.Y.Z` and `:X.Y` (multi-arch) without moving `:main`; CONTRIBUTING has the release steps.
 
 ### Fixed
