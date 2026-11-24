@@ -14,12 +14,15 @@ import anyio
 from mcp.server.fastmcp import FastMCP
 from mcp.server.stdio import stdio_server
 
+from medmcp_template.effects import tool_effect
 from medmcp_template.tools.example import add_numbers
 
 mcp = FastMCP("medmcp-template")
 
-# Register tools here — one add_tool call per domain tool.
-mcp.add_tool(add_numbers)
+# Register tools here — one add_tool call per domain tool, each with its effect
+# ("read_only", "writes_new" or "destructive"; see effects.py) for the approval card.
+mcp.add_tool(add_numbers, **tool_effect("read_only"))
+# mcp.add_tool(process_image, **tool_effect("writes_new"))
 
 
 def server_config() -> dict[str, object]:

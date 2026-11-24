@@ -133,7 +133,7 @@ uv run ruff format
 Each medmcp package exposes its functionality as MCP tools — plain typed Python functions that an LLM agent invokes by name. When adding one:
 
 1. Add a typed function with a Google-style docstring to `src/<pkg>/tools/<group>.py` (one file per logical group of related tools). Return a plain `dict` of JSON-serialisable values that includes a `_render` key with natural-language display instructions for that result, and confine any filesystem writes to an `output_dir` argument.
-2. Register it in `server.py` with `mcp.add_tool(your_function)`.
+2. Register it in `server.py` with `mcp.add_tool(your_function, **tool_effect("writes_new"))` — `read_only`, `writes_new` or `destructive`; MedMCP shows it on the approval card, and a tool registered without it shows no tag.
 3. Add unit tests in the matching `tests/test_<group>.py` — call the function directly, no server needed. Skip tests that need an absent external binary with a fixture rather than failing. (The template ships `tests/test_tools.py` as a starting point.)
 4. Add a row to the tool inventory table in `README.md`.
 5. If the tool introduces or changes a multi-step workflow, add or update the relevant `skills/<task>/SKILL.md`.
