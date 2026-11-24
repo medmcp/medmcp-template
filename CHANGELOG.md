@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Dependencies: `mcp` is held below 2.0; a host install (`uv tool install`) otherwise picked up mcp 2, which no longer has FastMCP.
 - `server.py`: worker processes are spawned instead of forked, and only JSON-RPC
   reaches stdout. A worker forked from the server (nnU-Net preprocessing,
   PyTorch DataLoader) inherited stdin's lock from the stdio transport's reader
