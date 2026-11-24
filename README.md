@@ -170,7 +170,7 @@ Confirm that `server_config()` in `server.py` returns the correct `name` and `co
 - Register them in `src/<your_package>/server.py` with `mcp.add_tool(your_tool)`.
 - FastMCP derives the MCP `name`, `description`, and `inputSchema` from the function signature and docstring — keep docstrings focused on what the tool does and what it returns.
 - For tools with specific output format requirements, include a `_render` key (str) in the return dict with display rules and a required next action (see `process_image` in `example.py`).
-- Declare each tool's effect when you register it, so MedMCP can show it on the approval card: `read_only` (reads its inputs, writes nothing), `writes_new` (creates new files, never changes existing ones) or `destructive` (deletes, changes or overwrites existing data). `mcp.add_tool(your_tool, **tool_effect("writes_new"))` — a tool registered without it shows no tag.
+- Declare each tool's effect when you register it, so MedMCP can show it on the approval card: `read_only` (reads its inputs, writes nothing), `writes_new` (writes output files, may re-create its own earlier outputs, never changes the user's files) or `destructive` (deletes, moves or changes files the user brought). `mcp.add_tool(your_tool, **tool_effect("writes_new"))` — a tool registered without it shows no tag.
 
 ### 5. Update the AgentSkill
 

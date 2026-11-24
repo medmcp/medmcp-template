@@ -15,8 +15,9 @@ from mcp.types import ToolAnnotations
 
 Effect = Literal["read_only", "writes_new", "destructive"]
 """``read_only``: reads its inputs, writes nothing.
-``writes_new``: creates new files, never changes existing ones.
-``destructive``: deletes, changes or overwrites existing data."""
+``writes_new``: writes output files; may re-create its own earlier outputs on a re-run,
+never changes the user's files.
+``destructive``: deletes, moves or changes files the user brought (inputs, a dataset)."""
 
 EFFECT_META_KEY = "org.medmcp/effect"
 
